@@ -1,0 +1,416 @@
+root@eltex-practice2-pg1-v11:~# mkdir -p /root/practice3
+cd /root/practice3
+root@eltex-practice2-pg1-v11:~/practice3# cat << 'EOF' > /root/practice3/cuckoo.sh
+#!/bin/bash
+
+LOGFILE="$(pwd)/cuckoo.log"
+FIFO=""
+
+# 1. Парсинг параметра запуска --pishitesuda=
+for arg in "$@"; do
+    case "$arg" in
+        --pishitesuda=*)
+            FIFO="${arg#*=}"
+            ;;
+    esac
+done
+
+if [[ -z "$FIFO" ]]; then
+    echo "Ошибка: укажите именованный канал через --pishitesuda=/абсолютный/путь" >&2
+    exit 1
+fi
+
+# 2. Обработчик сигналов (SIGTERM и SIGINT)
+cleanup() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') Shutdown!" >> "$LOGFILE"
+    rm -f "$FIFO"
+    exit 0
+}
+trap cleanup SIGTERM SIGINT
+
+# 3. Создание именованного канала
+[[ -p "$FIFO" ]] || mkfifo "$FIFO"
+
+# 4. Фиксация запуска
+echo "$(date '+%Y-%m-%d %H:%M:%S') Startup!" >> "$LOGFILE"
+
+# 5. Цикл обработки запросов через FIFO
+while true; do
+
+root@eltex-practice2-pg1-v11:~/practice3# chmod +x /root/practice3/cuckoo.shd %H:%M:%S') ${NAME}[${PID}] ${N}" >> "$LOGFILE"hen
+root@eltex-practice2-pg1-v11:~/practice3# cat cuckoo.sh
+#!/bin/bash
+
+LOGFILE="$(pwd)/cuckoo.log"
+FIFO=""
+
+# 1. Парсинг параметра запуска --pishitesuda=
+for arg in "$@"; do
+    case "$arg" in
+        --pishitesuda=*)
+            FIFO="${arg#*=}"
+            ;;
+    esac
+done
+
+if [[ -z "$FIFO" ]]; then
+    echo "Ошибка: укажите именованный канал через --pishitesuda=/абсолютный/путь" >&2
+    exit 1
+fi
+
+# 2. Обработчик сигналов (SIGTERM и SIGINT)
+cleanup() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') Shutdown!" >> "$LOGFILE"
+    rm -f "$FIFO"
+    exit 0
+}
+trap cleanup SIGTERM SIGINT
+
+# 3. Создание именованного канала
+[[ -p "$FIFO" ]] || mkfifo "$FIFO"
+
+# 4. Фиксация запуска
+echo "$(date '+%Y-%m-%d %H:%M:%S') Startup!" >> "$LOGFILE"
+
+# 5. Цикл обработки запросов через FIFO
+while true; do
+    if read -r line < "$FIFO"; then
+        # Проверяем шаблон "NAME[PID]: how much time do I have?"
+        if [[ "$line" =~ ^(.*)\[([0-9]+)\]:\ how\ much\ time\ do\ I\ have\?$ ]]; then
+            NAME="${BASH_REMATCH[1]}"
+            PID="${BASH_REMATCH[2]}"
+
+            # Генерация числа N от 2 до 10
+            N=$(( RANDOM % 9 + 2 ))
+
+            # Возврат числа обратно в канал для клиента
+            echo "$N" > "$FIFO"
+
+            # Логирование события
+            echo "$(date '+%Y-%m-%d %H:%M:%S') ${NAME}[${PID}] ${N}" >> "$LOGFILE"
+        fi
+    fi
+done
+root@eltex-practice2-pg1-v11:~/practice3# cat << 'EOF' > /etc/systemd/system/cuckoo.service
+[Unit]
+Description=Cuckoo Time Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/practice3
+ExecStart=/root/practice3/cuckoo.sh --pishitesuda=/tmp/cuckoo_pipe
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+root@eltex-practice2-pg1-v11:~/practice3# systemctl daemon-reload
+
+root@eltex-practice2-pg1-v11:~/practice3# systemctl enable cuckoo.service
+root@eltex-practice2-pg1-v11:~/practice3# systemctl start cuckoo.service
+
+root@eltex-practice2-pg1-v11:~/practice3# systemctl status cuckoo.service
+Created symlink /etc/systemd/system/multi-user.target.wants/cuckoo.service → /etc/systemd/system/cuckoo.service.
+● cuckoo.service - Cuckoo Time Service
+     Loaded: loaded (/etc/systemd/system/cuckoo.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-10-23 16:33:00 UTC; 26ms ago
+   Main PID: 23087 (cuckoo.sh)
+      Tasks: 2 (limit: 4600)
+     Memory: 484.0K (peak: 1.5M)
+        CPU: 2ms
+     CGroup: /system.slice/cuckoo.service
+             ├─23087 /bin/bash /root/practice3/cuckoo.sh --pishitesuda=/tmp/cuckoo_pipe
+             └─23090 "[mkfifo]"
+
+Oct 23 16:33:00 eltex-practice2-pg1-v11 systemd[1]: Started cuckoo.service - Cuckoo Time Service.
+root@eltex-practice2-pg1-v11:~/practice3# ls
+cuckoo.log  cuckoo.sh
+root@eltex-practice2-pg1-v11:~/practice3# cat cuckoo.log
+2026-10-23 16:33:00 Startup!
+root@eltex-practice2-pg1-v11:~/practice3#
+root@eltex-practice2-pg1-v11:~/practice3# cat << 'EOF' > /root/practice3/template_task.sh
+#!/bin/bash
+
+# Получаем имя скрипта без полного пути
+SCRIPT_NAME="$(basename "$0")"
+
+# 1. Проверка на имя template_task.sh
+if [[ "$SCRIPT_NAME" == "template_task.sh" ]]; then
+    echo "я бригадир, сам не работаю"
+    exit 0
+fi
+
+WORKDIR="$(dirname "$0")"
+LOGFILE="${WORKDIR}/report_${SCRIPT_NAME}.log"
+
+# 2. Логирование старта
+echo "$(date '+%Y-%m-%d %H:%M:%S') [$$] Скрипт запущен" >> "$LOGFILE"
+
+# 3. Динамический поиск именованного канала cuckoo.sh через procfs
+FIFO_PATH=""
+for p in /proc/[0-9]*; do
+    if [[ -r "$p/cmdline" ]] && grep -qa "cuckoo.sh" "$p/cmdline" 2>/dev/null; then
+        FIFO_PATH=$(tr '\0' '\n' < "$p/cmdline" | grep '^--pishitesuda=' | head -n 1 | cut -d= -f2)
+        break
+    fi
+done
+
+if [[ -z "$FIFO_PATH" || ! -p "$FIFO_PATH" ]]; then
+    echo "Ошибка: канал cuckoo.sh не найден через procfs!" >> "$LOGFILE"
+    exit 1
+fi
+
+# 4. Отправка запроса в канал и чтение ответа N
+echo "${SCRIPT_NAME}[$$]: how much time do I have?" > "$FIFO_PATH"
+read -r N < "$FIFO_PATH"
+
+EOFo "$(date '+%Y-%m-%d %H:%M:%S') [$$] Скрипт завершился, работал ${N} секунд." >> "$LOGFILE"
+root@eltex-practice2-pg1-v11:~/practice3# cat << 'EOF' > /root/practice3/template_task.sh
+#!/bin/bash
+                                          cat << 'EOF' > /root/practice3/template_task.sh
+#!/bin/bash
+                                          cat << 'EOF' > /root/practice3/template_task.sh
+#!/bin/bash
+
+# Получаем имя скрипта без полного пути
+SCRIPT_NAME="$(basename "$0")"
+
+# 1. Проверка на имя template_task.sh
+if [[ "$SCRIPT_NAME" == "template_task.sh" ]]; then
+    echo "я бригадир, сам не работаю"
+    exit 0
+fi
+
+WORKDIR="$(dirname "$0")"
+LOGFILE="${WORKDIR}/report_${SCRIPT_NAME}.log"
+
+# 2. Логирование старта
+echo "$(date '+%Y-%m-%d %H:%M:%S') [$$] Скрипт запущен" >> "$LOGFILE"
+
+# 3. Динамический поиск именованного канала cuckoo.sh через procfs
+FIFO_PATH=""
+for p in /proc/[0-9]*; do
+    if [[ -r "$p/cmdline" ]] && grep -qa "cuckoo.sh" "$p/cmdline" 2>/dev/null; then
+        FIFO_PATH=$(tr '\0' '\n' < "$p/cmdline" | grep '^--pishitesuda=' | head -n 1 | cut -d= -f2)
+        break
+    fi
+done
+
+if [[ -z "$FIFO_PATH" || ! -p "$FIFO_PATH" ]]; then
+    echo "Ошибка: канал cuckoo.sh не найден через procfs!" >> "$LOGFILE"
+    exit 1
+fi
+
+# 4. Отправка запроса в канал и чтение ответа N
+echo "${SCRIPT_NAME}[$$]: how much time do I have?" > "$FIFO_PATH"
+read -r N < "$FIFO_PATH"
+
+EOFo "$(date '+%Y-%m-%d %H:%M:%S') [$$] Скрипт завершился, работал ${N} секунд." >> "$LOGFILE"
+root@eltex-practice2-pg1-v11:~/practice3# ls
+cuckoo.log  cuckoo.sh  template_task.sh
+root@eltex-practice2-pg1-v11:~/practice3# cat << 'EOF' > /root/practice3/template_task.sh
+#!/bin/bash                               ls
+                                          ^C
+root@eltex-practice2-pg1-v11:~/practice3# cat template_task.sh
+#!/bin/bash
+
+# Получаем имя скрипта без полного пути
+SCRIPT_NAME="$(basename "$0")"
+
+# 1. Проверка на имя template_task.sh
+if [[ "$SCRIPT_NAME" == "template_task.sh" ]]; then
+    echo "я бригадир, сам не работаю"
+    exit 0
+fi
+
+WORKDIR="$(dirname "$0")"
+LOGFILE="${WORKDIR}/report_${SCRIPT_NAME}.log"
+
+# 2. Логирование старта
+echo "$(date '+%Y-%m-%d %H:%M:%S') [$$] Скрипт запущен" >> "$LOGFILE"
+
+# 3. Динамический поиск именованного канала cuckoo.sh через procfs
+FIFO_PATH=""
+for p in /proc/[0-9]*; do
+    if [[ -r "$p/cmdline" ]] && grep -qa "cuckoo.sh" "$p/cmdline" 2>/dev/null; then
+        FIFO_PATH=$(tr '\0' '\n' < "$p/cmdline" | grep '^--pishitesuda=' | head -n 1 | cut -d= -f2)
+        break
+    fi
+done
+
+if [[ -z "$FIFO_PATH" || ! -p "$FIFO_PATH" ]]; then
+    echo "Ошибка: канал cuckoo.sh не найден через procfs!" >> "$LOGFILE"
+    exit 1
+fi
+
+# 4. Отправка запроса в канал и чтение ответа N
+echo "${SCRIPT_NAME}[$$]: how much time do I have?" > "$FIFO_PATH"
+read -r N < "$FIFO_PATH"
+
+# 5. Ожидание полученного времени
+sleep "$N"
+
+# 6. Логирование завершения
+echo "$(date '+%Y-%m-%d %H:%M:%S') [$$] Скрипт завершился, работал ${N} секунд." >> "$LOGFILE"
+root@eltex-practice2-pg1-v11:~/practice3# cat << 'EOF' > /root/practice3/template_task.sh
+> #!/bin/bash
+
+# Получаем имя скрипта без полного пути
+SCRIPT_NAME="$(basename "$0")"
+
+# 1. Проверка на имя template_task.sh
+if [[ "$SCRIPT_NAME" == "template_task.sh" ]]; then
+    echo "я бригадир, сам не работаю"
+    exit 0
+fi
+
+WORKDIR="$(dirname "$0")"
+LOGFILE="${WORKDIR}/report_${SCRIPT_NAME}.log"
+
+# 2. Логирование старта
+echo "$(date '+%Y-%m-%d %H:%M:%S') [$$] Скрипт запущен" >> "$LOGFILE"
+
+# 3. Динамический поиск именованного канала cuckoo.sh через procfs
+FIFO_PATH=""
+for p in /proc/[0-9]*; do
+    if [[ -r "$p/cmdline" ]] && grep -qa "cuckoo.sh" "$p/cmdline" 2>/dev/null; then
+        FIFO_PATH=$(tr '\0' '\n' < "$p/cmdline" | grep '^--pishitesuda=' | head -n 1 | cut -d= -f2)
+        break
+    fi
+done
+
+if [[ -z "$FIFO_PATH" || ! -p "$FIFO_PATH" ]]; then
+    echo "Ошибка: канал cuckoo.sh не найден через procfs!" >> "$LOGFILE"
+    exit 1
+fi
+
+# 4. Отправка запроса в канал и чтение ответа N
+echo "${SCRIPT_NAME}[$$]: how much time do I have?" > "$FIFO_PATH"
+read -r N < "$FIFO_PATH"
+
+# 5. Ожидание полученного времени
+EOFo "$(date '+%Y-%m-%d %H:%M:%S') [$$] Скрипт завершился, работал ${N} секунд." >> "$LOGFILE"
+
+root@eltex-practice2-pg1-v11:~/practice3# chmod +x /root/practice3/template_task.sh
+root@eltex-practice2-pg1-v11:~/practice3# /root/practice3/template_task.sh
+я бригадир, сам не работаю
+root@eltex-practice2-pg1-v11:~/practice3# cat << 'EOF' > /root/practice3/observer.sh
+> #!/bin/bash
+
+WORKDIR="$(dirname "$0")"
+CONF="${WORKDIR}/observer.conf"
+LOGFILE="${WORKDIR}/observer.log"
+
+if [[ ! -f "$CONF" ]]; then
+    exit 0
+fi
+
+while read -r script_name; do
+    # Пропускаем пустые строки и комментарии
+    [[ -z "$script_name" || "$script_name" =~ ^# ]] && continue
+
+    # Проверяем наличие запущенного процесса в /proc
+    is_running=0
+    for p in /proc/[0-9]*; do
+        if [[ -r "$p/cmdline" ]] && grep -qa "$script_name" "$p/cmdline" 2>/dev/null; then
+            is_running=1
+            break
+        fi
+    done
+
+    # Если процесс не найден в /proc — запускаем в фоне
+    if [[ $is_running -eq 0 ]]; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') Перезапуск $script_name" >> "$LOGFILE"
+        nohup "${WORKDIR}/${script_name}" >/dev/null 2>&1 &
+    fi
+done < "$CONF"
+EOF
+root@eltex-practice2-pg1-v11:~/practice3# ls
+cuckoo.log  cuckoo.sh  observer.sh  template_task.sh
+root@eltex-practice2-pg1-v11:~/practice3# cat observer.sh
+#!/bin/bash
+
+WORKDIR="$(dirname "$0")"
+CONF="${WORKDIR}/observer.conf"
+LOGFILE="${WORKDIR}/observer.log"
+
+if [[ ! -f "$CONF" ]]; then
+    exit 0
+fi
+
+while read -r script_name; do
+    # Пропускаем пустые строки и комментарии
+    [[ -z "$script_name" || "$script_name" =~ ^# ]] && continue
+
+    # Проверяем наличие запущенного процесса в /proc
+    is_running=0
+    for p in /proc/[0-9]*; do
+        if [[ -r "$p/cmdline" ]] && grep -qa "$script_name" "$p/cmdline" 2>/dev/null; then
+            is_running=1
+            break
+        fi
+    done
+
+    # Если процесс не найден в /proc — запускаем в фоне
+    if [[ $is_running -eq 0 ]]; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') Перезапуск $script_name" >> "$LOGFILE"
+        nohup "${WORKDIR}/${script_name}" >/dev/null 2>&1 &
+    fi
+done < "$CONF"
+root@eltex-practice2-pg1-v11:~/practice3# chmod +x /root/practice3/observer.sh
+root@eltex-practice2-pg1-v11:~/practice3# (crontab -l 2>/dev/null; echo "* * * * * /root/practice3/observer.sh") | crontab -
+crontab -l
+* * * * * /root/practice3/observer.sh
+root@eltex-practice2-pg1-v11:~/practice3# ln -s template_task.sh task_worker1.sh
+root@eltex-practice2-pg1-v11:~/practice3# ln -s template_task.sh task_worker2.sh
+root@eltex-practice2-pg1-v11:~/practice3# ln -s template_task.sh task_worker3.sh
+root@eltex-practice2-pg1-v11:~/practice3# cat << 'EOF' > /root/practice3/observer.conf
+> template_task.sh
+task_worker1.sh
+task_worker2.sh
+task_worker3.sh
+EOF
+root@eltex-practice2-pg1-v11:~/practice3# cat /root/practice3/cuckoo.log
+2026-10-23 16:33:00 Startup!
+2026-10-23 16:46:01 task_worker1.sh[23382] 9
+2026-10-23 16:46:01 task_worker2.sh[23551] 7
+2026-10-23 16:46:01 task_worker3.sh[23722] 5
+root@eltex-practice2-pg1-v11:~/practice3# cat /root/practice3/observer.log
+2026-10-23 16:46:01 Перезапуск template_task.sh
+2026-10-23 16:46:01 Перезапуск task_worker1.sh
+2026-10-23 16:46:01 Перезапуск task_worker2.sh
+2026-10-23 16:46:01 Перезапуск task_worker3.sh
+root@eltex-practice2-pg1-v11:~/practice3# cat /root/practice3/report_task_worker1.sh.log
+2026-10-23 16:46:01 [23382] Скрипт запущен
+2026-10-23 16:46:10 [23382] Скрипт завершился, работал 9 секунд.
+root@eltex-practice2-pg1-v11:~/practice3#
+root@eltex-practice2-pg1-v11:~/practice3# tar -czvf practice3_report.tar.gz report_*.log observer.log cuckoo.log *.sh observer.conf
+report_task_worker1.sh.log
+report_task_worker2.sh.log
+report_task_worker3.sh.log
+observer.log
+cuckoo.log
+cuckoo.sh
+observer.sh
+task_worker1.sh
+task_worker2.sh
+task_worker3.sh
+template_task.sh
+observer.conf
+root@eltex-practice2-pg1-v11:~/practice3# ls -lh practice3_report.tar.gz
+-rw-r--r-- 1 root root 2.3K Oct 23 16:47 practice3_report.tar.gz
+root@eltex-practice2-pg1-v11:~/practice3# crontab -r
+root@eltex-practice2-pg1-v11:~/practice3# systemctl stop cuckoo.service
+root@eltex-practice2-pg1-v11:~/practice3# systemctl disable cuckoo.service
+Removed "/etc/systemd/system/multi-user.target.wants/cuckoo.service".
+root@eltex-practice2-pg1-v11:~/practice3# systemctl status cuckoo.service
+○ cuckoo.service - Cuckoo Time Service
+     Loaded: loaded (/etc/systemd/system/cuckoo.service; disabled; preset: enabled)
+     Active: inactive (dead)
+
+Oct 23 16:33:00 eltex-practice2-pg1-v11 systemd[1]: Started cuckoo.service - Cuckoo Time Service.
+Oct 23 16:48:05 eltex-practice2-pg1-v11 systemd[1]: Stopping cuckoo.service - Cuckoo Time Service...
+Oct 23 16:48:05 eltex-practice2-pg1-v11 systemd[1]: cuckoo.service: Deactivated successfully.
+Oct 23 16:48:05 eltex-practice2-pg1-v11 systemd[1]: Stopped cuckoo.service - Cuckoo Time Service.
