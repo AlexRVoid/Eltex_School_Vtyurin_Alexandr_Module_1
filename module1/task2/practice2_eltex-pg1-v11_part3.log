@@ -1,0 +1,186 @@
+vtyur@AlexRVoid_PC UCRT64 /d
+$ mkdir Eltex_School_Vtyurin_Alexandr_module_1/
+
+vtyur@AlexRVoid_PC UCRT64 /d
+$ cd Eltex_School_Vtyurin_Alexandr_module_1
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ export MYUSER="eltex-pg1-v11"
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ exec > >(tee -a "practice2_${MYUSER}_part3.log") 2>&1
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$g
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ git config --global user.name "AlexRVoid"
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ git config --global user.email "vtyurinalexandr@yahoo.com"
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ git config --global init.defaultBranch main
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ git config --list --show-origin
+file:C:/Program Files/Git/etc/gitconfig diff.astextplain.textconv=astextplain
+file:C:/Program Files/Git/etc/gitconfig filter.lfs.clean=git-lfs clean -- %f
+file:C:/Program Files/Git/etc/gitconfig filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Program Files/Git/etc/gitconfig filter.lfs.process=git-lfs filter-process
+file:C:/Program Files/Git/etc/gitconfig filter.lfs.required=true
+file:C:/Program Files/Git/etc/gitconfig http.sslbackend=openssl
+file:C:/Program Files/Git/etc/gitconfig http.sslcainfo=C:/Program Files/Git/ucrt64/etc/ssl/certs/ca-bundle.crt
+file:C:/Program Files/Git/etc/gitconfig core.autocrlf=true
+file:C:/Program Files/Git/etc/gitconfig core.fscache=true
+file:C:/Program Files/Git/etc/gitconfig core.symlinks=false
+file:C:/Program Files/Git/etc/gitconfig pull.rebase=false
+file:C:/Program Files/Git/etc/gitconfig credential.helper=manager
+file:C:/Program Files/Git/etc/gitconfig credential.https://dev.azure.com.usehttppath=true
+file:C:/Program Files/Git/etc/gitconfig init.defaultbranch=master
+file:C:/Users/vtyur/.gitconfig  filter.lfs.required=true
+file:C:/Users/vtyur/.gitconfig  filter.lfs.clean=git-lfs clean -- %f
+file:C:/Users/vtyur/.gitconfig  filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Users/vtyur/.gitconfig  filter.lfs.process=git-lfs filter-process
+file:C:/Users/vtyur/.gitconfig  user.name=AlexRVoid
+file:C:/Users/vtyur/.gitconfig  user.email=vtyurinalexandr@yahoo.com
+file:C:/Users/vtyur/.gitconfig  safe.directory=F:/VKR-Vtyurin-AR
+file:C:/Users/vtyur/.gitconfig  init.defaultbranch=main
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ git --version
+git version 2.56.0.windows.2
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ gh --version
+bash: gh: command not found
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ apt update
+bash: apt: command not found
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ apt install git gh
+bash: apt: command not found
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ winget install --id GitHub.cli
+Found GitHub CLI [GitHub.cli] Version 2.103.0
+This application is licensed to you by its owner.
+Microsoft is not responsible for, nor does it grant any licenses to, third-party packages.
+Downloading https://github.com/cli/cli/releases/download/v2.103.0/gh_2.103.0_windows_amd64.msi
+Successfully verified installer hash
+Starting package install...
+Successfully installed
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ export MYUSER="eltex-pg1-v11"
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ exec > >(tee -a "practice2_${MYUSER}_part3.log") 2>&1
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ git --version
+git version 2.56.0.windows.2
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ gh --version
+gh version 2.103.0 (2026-10-21)
+https://github.com/cli/cli/releases/tag/v2.103.0
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ ssh-keygen -t ed25519 -f ~/.ssh/github_key -C "vtyurinalexandr@yahoo.com"
+Created directory '/c/Users/vtyur/.ssh'.
+Enter passphrase for "/c/Users/vtyur/.ssh/github_key" (empty for no passphrase):
+Enter same passphrase again:
+Generating public/private ed25519 key pair.
+Your identification has been saved in /c/Users/vtyur/.ssh/github_key
+Your public key has been saved in /c/Users/vtyur/.ssh/github_key.pub
+The key fingerprint is:
+SHA256:crtuipvxC3JL6JHb1k6H1MyWI6UjG0t+kQr65h8FFJg vtyurinalexandr@yahoo.com
+The key's randomart image is:
++--[ED25519 256]--+
+|   oo.           |
+|  E.             |
+|    .   .        |
+|     . B .       |
+|  . + X S        |
+| . * O O o       |
+|. = @.+ o        |
+| o.B.@....       |
+| o=oBo==o        |
++----[SHA256]-----+
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ gh auth login
+
+! One-time code (C7F7-C0FA) copied to clipboard
+Open this URL to continue in your web browser: https://github.com/login/device
+✓ Authentication complete.
+✓ Logged in as AlexRVoid
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ gh auth setup-git --hostname github.com
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ gh auth status
+github.com
+  ✓ Logged in to github.com account AlexRVoid (keyring)
+  - Active account: true
+  - Git operations protocol: https
+  - Token: gho_************************************
+  - Token scopes: 'gist', 'read:org', 'repo'
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ gh repo create --public Eltex_School_Vtyurin_Alexandr_Module_1
+https://github.com/AlexRVoid/Eltex_School_Vtyurin_Alexandr_Module_1
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ mkdir Eltex_School_Vtyurin_Alexandr_Module_1
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1
+$ cd Eltex_School_Vtyurin_Alexandr_Module_1
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1/Eltex_School_Vtyurin_Alexandr_Module_1
+$ echo "#Задания, выполненные в рамках курса «Системное программирование в Linux (НСТУ)» модуль 1, студентом Втюриным Александром Романовичем (набор осени 2026 года). В репозитории прадставленны отчёты по практическим работам в рамках первого модуля" >> README.md
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1/Eltex_School_Vtyurin_Alexandr_Module_1
+$ git init
+Initialized empty Git repository in D:/Eltex_School_Vtyurin_Alexandr_module_1/Eltex_School_Vtyurin_Alexandr_Module_1/.git/
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1/Eltex_School_Vtyurin_Alexandr_Module_1 (main)
+$ git add README.md
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1/Eltex_School_Vtyurin_Alexandr_Module_1 (main)
+$ git commit -m "first commit"
+[main (root-commit) f749f69] first commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1/Eltex_School_Vtyurin_Alexandr_Module_1 (main)
+$ git branch -M main
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1/Eltex_School_Vtyurin_Alexandr_Module_1 (main)
+$ git remote add origin https://github.com/AlexRVoid/Eltex_School_Vtyurin_Alexandr_Module_1.git
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1/Eltex_School_Vtyurin_Alexandr_Module_1 (main)
+$ git status
+On branch main
+nothing to commit, working tree clean
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1/Eltex_School_Vtyurin_Alexandr_Module_1 (main)
+$ git push -u origin main
+To https://github.com/AlexRVoid/Eltex_School_Vtyurin_Alexandr_Module_1.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1/Eltex_School_Vtyurin_Alexandr_Module_1 (main)
+$ mkdir -p module1/task1
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1/Eltex_School_Vtyurin_Alexandr_Module_1 (main)
+$ mkdir module1/task2
+
+vtyur@AlexRVoid_PC UCRT64 /d/Eltex_School_Vtyurin_Alexandr_module_1/Eltex_School_Vtyurin_Alexandr_Module_1 (main)
+$ mkdir module1/task3
+
